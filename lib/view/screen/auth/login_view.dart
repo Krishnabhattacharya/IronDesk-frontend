@@ -21,7 +21,9 @@ import 'package:irondesk/view/widgets/glass_container.dart';
 import 'package:irondesk/routes/app_routes.dart';
 
 // Providers for local UI state (avoiding setState)
-final passwordVisibilityProvider = StateProvider.autoDispose<bool>((ref) => false);
+final passwordVisibilityProvider = StateProvider.autoDispose<bool>(
+  (ref) => false,
+);
 final rememberMeProvider = StateProvider<bool>((ref) => false);
 
 class LoginView extends ConsumerStatefulWidget {
@@ -49,8 +51,12 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
   }
 
   Future<void> _loadSavedCredentials() async {
-    final savedEmail = SharedPrefsService.getString(AppConstants.userRememberMeEmail);
-    final savedPassword = SharedPrefsService.getString(AppConstants.userRememberMePassword);
+    final savedEmail = SharedPrefsService.getString(
+      AppConstants.userRememberMeEmail,
+    );
+    final savedPassword = SharedPrefsService.getString(
+      AppConstants.userRememberMePassword,
+    );
 
     if (savedEmail != null && savedPassword != null) {
       _emailController.text = savedEmail;
@@ -81,26 +87,27 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0EAFC),
-                  Color(0xFFCFDEF3),
-                ],
+                colors: [Color(0xFFE0EAFC), Color(0xFFCFDEF3)],
               ),
             ),
           ),
-          
+
           // Background Blobs (Optional for effect)
           Positioned(
             top: -50,
             right: -50,
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.3),
-                shape: BoxShape.circle,
-              ),
-            ).animate().scale(duration: 2.seconds, curve: Curves.easeInOut).fadeIn(),
+            child:
+                Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.blueAccent.withOpacity(0.3),
+                        shape: BoxShape.circle,
+                      ),
+                    )
+                    .animate()
+                    .scale(duration: 2.seconds, curve: Curves.easeInOut)
+                    .fadeIn(),
           ),
 
           Center(
@@ -110,9 +117,11 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Logo
-                  Icon(Icons.camera, size: 60.h, color: Color(0xFF102E76))
-                      .animate()
-                      .slideY(begin: -0.5, end: 0, duration: 600.ms),
+                  Icon(
+                    Icons.camera,
+                    size: 60.h,
+                    color: Color(0xFF102E76),
+                  ).animate().slideY(begin: -0.5, end: 0, duration: 600.ms),
                   Gap(10.h),
                   Text(
                     "Welcome Back",
@@ -122,7 +131,7 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
                       color: Color(0xFF102E76),
                     ),
                   ).animate().fadeIn(delay: 200.ms),
-                  
+
                   Gap(30.h),
 
                   // Login Form Card
@@ -156,11 +165,12 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
                               ),
                               prefixIcon: Icon(Icons.email_outlined),
                             ),
-                            validator: (value) => value!.isEmpty ? "Email required" : null,
+                            validator: (value) =>
+                                value!.isEmpty ? "Email required" : null,
                           ),
-                          
+
                           Gap(20.h),
-                          
+
                           Text(
                             "Password",
                             style: GoogleFonts.inter(
@@ -183,43 +193,61 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
                               prefixIcon: Icon(Icons.lock_outline),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                  isPasswordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
                                 ),
                                 onPressed: () {
-                                  ref.read(passwordVisibilityProvider.notifier).state = !isPasswordVisible;
+                                  ref
+                                          .read(
+                                            passwordVisibilityProvider.notifier,
+                                          )
+                                          .state =
+                                      !isPasswordVisible;
                                 },
                               ),
                             ),
-                           validator: (value) => value!.isEmpty ? "Password required" : null,
+                            validator: (value) =>
+                                value!.isEmpty ? "Password required" : null,
                           ),
-                          
+
                           Gap(10.h),
-                          
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Checkbox(
-                                    value: rememberMe,
-                                    onChanged: (val) {
-                                      ref.read(rememberMeProvider.notifier).state = val ?? false;
-                                    },
-                                  ),
-                                  Text("Remember me"),
-                                ],
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  context.pushNamed(AppRoute.forgetPasswordScreen.name);
-                                },
-                                child: Text("Forgot Password?"),
-                              )
-                            ],
+
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Checkbox(
+                                      value: rememberMe,
+                                      onChanged: (val) {
+                                        ref
+                                                .read(
+                                                  rememberMeProvider.notifier,
+                                                )
+                                                .state =
+                                            val ?? false;
+                                      },
+                                    ),
+                                    Text("Remember me"),
+                                  ],
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    context.pushNamed(
+                                      AppRoute.forgetPasswordScreen.name,
+                                    );
+                                  },
+                                  child: Text("Forgot Password?"),
+                                ),
+                              ],
+                            ),
                           ),
-                          
+
                           Gap(20.h),
-                          
+
                           SizedBox(
                             width: double.infinity,
                             height: 50.h,
@@ -230,12 +258,19 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              onPressed: viewModel.loading ? null : () => _handleLogin(viewModel),
+                              onPressed: viewModel.loading
+                                  ? null
+                                  : () => _handleLogin(viewModel),
                               child: viewModel.loading
-                                  ? CircularProgressIndicator(color: Colors.white)
+                                  ? CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
                                   : Text(
                                       "Login",
-                                      style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16.sp,
+                                      ),
                                     ),
                             ),
                           ),
@@ -243,9 +278,9 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
                       ),
                     ),
                   ).animate().slideY(begin: 0.5, end: 0, duration: 600.ms),
-                  
+
                   Gap(20.h),
-                  
+
                   // Register Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -253,7 +288,10 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
                       Text("Don't have an account? "),
                       GestureDetector(
                         onTap: () {
-                           context.pushNamed(AppRoute.registerView.name, extra: UserType.client);
+                          context.pushNamed(
+                            AppRoute.registerView.name,
+                            extra: UserType.client,
+                          );
                         },
                         child: Text(
                           "Register",
@@ -282,40 +320,53 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
 
     // Handle Remember Me
     if (ref.read(rememberMeProvider)) {
-      await SharedPrefsService.setString(AppConstants.userRememberMeEmail, email);
-      await SharedPrefsService.setString(AppConstants.userRememberMePassword, password);
+      await SharedPrefsService.setString(
+        AppConstants.userRememberMeEmail,
+        email,
+      );
+      await SharedPrefsService.setString(
+        AppConstants.userRememberMePassword,
+        password,
+      );
     } else {
       await SharedPrefsService.remove(AppConstants.userRememberMeEmail);
       await SharedPrefsService.remove(AppConstants.userRememberMePassword);
     }
 
-    // Call Login
-    final success = await viewModel.login(
-      LoginRequestModel(email: email, password: password),
-    );
+    // Call Login (Ignored for manual testing)
+    // final success = await viewModel.login(
+    //   LoginRequestModel(email: email, password: password),
+    // );
 
-    if (success) {
-      if (!mounted) return;
-      
-      // Get role and navigate
-      final loginData = viewModel.loginResponseModel.data;
-      final role = loginData?.user?.role;
-      final routeName = viewModel.getDashboardRouteForRole(role);
-      
-      context.goNamed(routeName);
-    }
+    // MANUAL TESTING OVERRIDE
+    // Change this string to: "employee", "hr", "admin", "convertToEmployee", "employeeActivation", "client"
+    final role = "employee"; 
+    
+    final routeName = role == "convertToEmployee"
+        ? AppRoute.convertToEmployee.name
+        : role == "employeeActivation"
+        ? AppRoute.employeeActivation.name
+        : role == "employee"
+        ? AppRoute.employeeDashboard.name
+        : role == "hr"
+        ? AppRoute.hrDashboard.name
+        : role == "admin"
+        ? AppRoute.adminDashboard.name
+        : AppRoute.waitingDashboard.name;
+
+    context.goNamed(routeName);
   }
 
   @override
   void showSnackBar(String message, {Color? color}) {
-     ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: color ?? Theme.of(context).primaryColor,
       ),
     );
   }
-  
+
   @override
   void navigateToScreen(AppRoute appRoute, {Map<String, String>? params}) {
     // TODO: implement navigateToScreen

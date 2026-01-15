@@ -18,18 +18,18 @@ class Environment {
     print('Firebase apps before init: ${Firebase.apps.map((e) => e.name)}');
 
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-      // options: FirebaseOptions(
-      //   apiKey: "AIzaSyD6_1PlDUZ4yU4Gb_M26vBUuYbSvY5lCK0",
-      //   appId: "1:427355627966:android:6ce208da5c97c2fbf399ef",
-      //   messagingSenderId: "427355627966",
-      //   projectId: "bookedlens-2d1d2",
-      // ),
-    );
+    // await Firebase.initializeApp(
+    // options: FirebaseOptions(
+    //   apiKey: "AIzaSyD6_1PlDUZ4yU4Gb_M26vBUuYbSvY5lCK0",
+    //   appId: "1:427355627966:android:6ce208da5c97c2fbf399ef",
+    //   messagingSenderId: "427355627966",
+    //   projectId: "bookedlens-2d1d2",
+    // ),
+    //);
     await SharedPreferenceService.init();
     // FirebaseMessaging.onBackgroundMessage(handleBackgroundMessageHandler);
     // await FirebaseNotification().initNotification();
-   //await PushNotificationService.initialize();
+    //await PushNotificationService.initialize();
 
     await Permission.activityRecognition.request();
 

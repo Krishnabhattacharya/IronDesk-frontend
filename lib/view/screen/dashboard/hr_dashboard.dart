@@ -7,7 +7,7 @@ import 'package:irondesk/routes/app_routes.dart';
 import 'package:irondesk/services/shared_preference_service.dart';
 import 'package:irondesk/utils/utils.dart';
 import 'package:irondesk/view/screen/dashboard/hr_tabs/hr_home_view.dart';
-// import 'package:irondesk/view/screen/dashboard/hr_tabs/pending_users_view.dart';
+import 'package:irondesk/view/screen/dashboard/hr_tabs/pending_users_view.dart';
 
 class HRDashboard extends StatefulWidget {
   const HRDashboard({super.key});
@@ -21,7 +21,7 @@ class _HRDashboardState extends State<HRDashboard> {
 
   final List<Widget> _pages = [
     const HRHomeView(),
-    const Center(child: Text("Pending Users (TODO)")), // PendingUsersView()
+    const PendingUsersView(), // Replaced TODO
     const Center(child: Text("Employees (TODO)")),
     const Center(child: Text("Attendance (TODO)")),
   ];

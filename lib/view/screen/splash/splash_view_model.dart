@@ -19,16 +19,14 @@ class SplashViewModel extends BaseViewModel<BaseScreenView> {
     
     if (token != null && token.isNotEmpty && userTypeStr != null) {
       // Navigate based on role
-      if (userTypeStr == UserType.client.name) {
-        // Employee / Seller
-        GoRouter.of(context).goNamed(AppRoute.sellerDashboard.name);
-      } else if (userTypeStr == UserType.dealer.name) {
-        // User / Client
-        // Check if waiting? (Todo: add status check logic if needed)
-        GoRouter.of(context).goNamed(AppRoute.dealerDashboard.name);
-      } else if (userTypeStr == UserType.admin.name) {
-        // Admin
-         GoRouter.of(context).goNamed(AppRoute.dashboard.name); // Placeholder
+      if (userTypeStr == "employee") {
+        GoRouter.of(context).goNamed(AppRoute.employeeDashboard.name);
+      } else if (userTypeStr == "hr") {
+        GoRouter.of(context).goNamed(AppRoute.hrDashboard.name);
+      } else if (userTypeStr == "admin") {
+         GoRouter.of(context).goNamed(AppRoute.adminDashboard.name);
+      } else if (userTypeStr == "client" || userTypeStr == "user") {
+        GoRouter.of(context).goNamed(AppRoute.waitingDashboard.name);
       } else {
         // Unknown, go to login
         GoRouter.of(context).goNamed(AppRoute.loginView.name);

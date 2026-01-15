@@ -9,6 +9,7 @@ import 'package:irondesk/helper/base_view_model.dart';
 import 'package:irondesk/services/shared_preference_service.dart';
 import 'package:irondesk/utils/utils.dart';
 import 'package:irondesk/services/enums/user_type.dart';
+import 'package:irondesk/routes/app_routes.dart';
 
 class LoginViewModel extends BaseViewModel<BaseScreenView> {
   final AuthRepo authRepo;
@@ -75,14 +76,17 @@ class LoginViewModel extends BaseViewModel<BaseScreenView> {
 
   // Determine route based on role
   String getDashboardRouteForRole(String? role) {
-     if (role == "seller") {
-        return "sellerDashboard"; // AppRoute.sellerDashboard.name
-      } else if (role == "dealer") {
-        return "dealerDashboard"; // AppRoute.dealerDashboard.name
-      } else if (role == "admin") {
-        return "dashboard"; // Placeholder
-      }
-      return "dealerDashboard"; // Default
+    if (role == "employee") {
+      return AppRoute.employeeDashboard.name;
+    } else if (role == "hr") {
+      return AppRoute.hrDashboard.name;
+    } else if (role == "admin") {
+      return AppRoute.attendanceCheckIn.name;
+    } else if (role == "client" || role == "user") {
+      // User -> Waiting Dashboard
+      return AppRoute.employeeActivation.name;
+    }
+    return AppRoute.employeeActivation.name; // Default fallback
   }
 
   Future<bool> updateUserToken(UserTokenUpdate toekn) async {
