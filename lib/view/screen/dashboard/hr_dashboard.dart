@@ -8,6 +8,9 @@ import 'package:irondesk/services/shared_preference_service.dart';
 import 'package:irondesk/utils/utils.dart';
 import 'package:irondesk/view/screen/dashboard/hr_tabs/hr_home_view.dart';
 import 'package:irondesk/view/screen/dashboard/hr_tabs/pending_users_view.dart';
+import 'package:irondesk/view/widgets/hr_glass_bottom_nav.dart';
+import 'package:irondesk/view/widgets/hr_glass_side_nav.dart';
+import 'package:irondesk/view/widgets/max_width_wrapper.dart';
 
 class HRDashboard extends StatefulWidget {
   const HRDashboard({super.key});
@@ -21,41 +24,73 @@ class _HRDashboardState extends State<HRDashboard> {
 
   final List<Widget> _pages = [
     const HRHomeView(),
-    const PendingUsersView(), // Replaced TODO
-    const Center(child: Text("Employees (TODO)")),
-    const Center(child: Text("Attendance (TODO)")),
+    const PendingUsersView(), 
+    const Center(child: Text("Employees Directory (Coming Soon)")),
+    const Center(child: Text("Attendance Logs (Coming Soon)")),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final isWideScreen = MediaQuery.of(context).size.width > 800;
+    
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F5F9),
-      appBar: AppBar(
-        title: Text("HR Portal", style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, color: Colors.indigo)),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        actions: [
-           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.indigo),
-            onPressed: () {
-              SharedPrefsService.remove("user_type");
-               SharedPrefsService.remove(AppConstants.token);
-              context.goNamed(AppRoute.loginView.name);
-            },
-          )
-        ],
-      ),
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (index) => setState(() => _selectedIndex = index),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.dashboard), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.person_add), label: 'Users'),
-          NavigationDestination(icon: Icon(Icons.people), label: 'Staff'),
-          NavigationDestination(icon: Icon(Icons.calendar_today), label: 'Attd'),
-        ],
+      extendBody: !isWideScreen,
+      body: Container(
+         decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+               Color(0xFFE0EAFC), // Light Blue
+               Color(0xFFCFDEF3), // Light Grey-Blue
+               Color(0xFFE2E2E2), // Very Light Grey
+            ],
+            stops: [0.2, 0.5, 0.9],
+          ),
+        ),
+        child: isWideScreen
+            ? Row(
+                children: [
+                  // Side Nav (Web)
+                  HRGlassSideNav(
+                    selectedIndex: _selectedIndex,
+                    onTabSelected: (index) => setState(() => _selectedIndex = index),
+                  ),
+                  
+                  // Body
+                  Expanded(
+                    child: SafeArea(
+                       child: MaxWidthWrapper(
+                        maxWidth: 1000,
+                        child: IndexedStack(
+                          index: _selectedIndex,
+                          children: _pages,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Stack(
+                children: [
+                  // Body (Mobile)
+                  SafeArea(
+                    bottom: false,
+                    child: MaxWidthWrapper(
+                      child: IndexedStack(
+                        index: _selectedIndex,
+                        children: _pages,
+                      ),
+                    ),
+                  ),
+                  
+                  // Bottom Nav (Mobile)
+                  HRGlassBottomNav(
+                    selectedIndex: _selectedIndex,
+                    onTabSelected: (index) => setState(() => _selectedIndex = index),
+                  ),
+                ],
+              ),
       ),
     );
   }

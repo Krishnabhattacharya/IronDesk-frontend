@@ -28,12 +28,12 @@ class SplashViewModel extends BaseViewModel<BaseScreenView> {
       } else if (userTypeStr == "client" || userTypeStr == "user") {
         GoRouter.of(context).goNamed(AppRoute.waitingDashboard.name);
       } else {
-        // Unknown, go to login
-        GoRouter.of(context).goNamed(AppRoute.loginView.name);
+        // Unknown, go to landing
+        GoRouter.of(context).goNamed(AppRoute.landing.name);
       }
     } else {
-      // No token, go to Login
-      GoRouter.of(context).goNamed(AppRoute.loginView.name);
+      // No token, go to Landing
+      GoRouter.of(context).goNamed(AppRoute.landing.name);
     }
   }
 }

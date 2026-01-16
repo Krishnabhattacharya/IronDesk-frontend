@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:irondesk/services/enums/user_type.dart';
+import 'package:irondesk/view/screen/auth/company_register_view.dart';
+import 'package:irondesk/view/screen/auth/landing_view.dart';
 import 'package:irondesk/view/screen/auth/login_view.dart';
 import 'package:irondesk/view/screen/auth/register_view.dart';
 
@@ -27,15 +29,26 @@ enum AppRoute {
   employeeActivation,
   myInventory,
   applyLeave,
-  forgetPasswordScreen, waitingDashboard, adminDashboard,
+  forgetPasswordScreen, waitingDashboard, adminDashboard, landing, registerCompany,
 }
 
 final routers = [
   GoRoute(
     path: '/',
     name: AppRoute.splash.name,
-    builder: (context, state) => const SplashView(),
+    builder: (context, state) => const SplashView(), // Splash logic determines next step
   ),
+  GoRoute(
+    path: '/landing',
+    name: AppRoute.landing.name,
+    builder: (context, state) => const LandingView(),
+  ),
+  GoRoute(
+    path: '/company/register',
+    name: AppRoute.registerCompany.name,
+    builder: (context, state) => const CompanyRegisterView(),
+  ),
+  // ... existing routes ...
     GoRoute(
     path: '/employeeActivation',
     name: AppRoute.employeeActivation.name,
