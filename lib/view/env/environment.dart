@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart'; 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -31,7 +32,9 @@ class Environment {
     // await FirebaseNotification().initNotification();
     //await PushNotificationService.initialize();
 
-    await Permission.activityRecognition.request();
+    if (!kIsWeb) {
+      await Permission.activityRecognition.request();
+    }
 
     // await Permission.location.request();
     // await Purchases.setLogLevel(LogLevel.debug);

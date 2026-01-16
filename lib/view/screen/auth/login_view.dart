@@ -19,6 +19,7 @@ import 'package:irondesk/utils/utils.dart';
 import 'package:irondesk/view/screen/auth/login_viewmodel.dart';
 import 'package:irondesk/view/widgets/glass_container.dart';
 import 'package:irondesk/routes/app_routes.dart';
+import 'package:irondesk/view/widgets/max_width_wrapper.dart';
 
 // Providers for local UI state (avoiding setState)
 final passwordVisibilityProvider = StateProvider.autoDispose<bool>(
@@ -110,12 +111,17 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
                     .fadeIn(),
           ),
 
+
+// ... existing imports/code ...
+
           Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+            child: MaxWidthWrapper(
+              maxWidth: 600, // Smaller for login
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
                   // Logo
                   Icon(
                     Icons.camera,
@@ -306,6 +312,7 @@ class _LoginViewState extends ConsumerState<LoginView> with BaseScreenView {
                 ],
               ),
             ),
+          ),
           ),
         ],
       ),

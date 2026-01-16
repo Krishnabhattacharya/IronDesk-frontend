@@ -8,6 +8,8 @@ import 'package:irondesk/view/screen/dashboard/employee_tabs/leave_view.dart';
 import 'package:irondesk/view/screen/dashboard/employee_tabs/salary_view.dart';
 import 'package:irondesk/view/screen/dashboard/employee_tabs/profile_view.dart';
 import 'package:irondesk/view/widgets/glass_bottom_nav.dart';
+import 'package:irondesk/view/widgets/max_width_wrapper.dart';
+import 'package:irondesk/view/widgets/glass_side_nav.dart';
 
 // Provider for Bottom Nav Index
 final employeeNavIndexProvider = StateProvider<int>((ref) => 0);
@@ -29,43 +31,73 @@ class EmployeeDashboard extends ConsumerWidget {
 
 
 
+
+
+// ... existing code ...
+
+    final isWideScreen = MediaQuery.of(context).size.width > 800;
+
     return Scaffold(
-      extendBody: true, 
-      body: Stack(
-        children: [
-       
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                   Color(0xFFE0EAFC), // Light Blue
-                   Color(0xFFCFDEF3), // Light Grey-Blue
-                   Color(0xFFE2E2E2), // Very Light Grey
+      extendBody: !isWideScreen, // Only extend body for floating bottom nav
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+               Color(0xFFE0EAFC), // Light Blue
+               Color(0xFFCFDEF3), // Light Grey-Blue
+               Color(0xFFE2E2E2), // Very Light Grey
+            ],
+            stops: [0.2, 0.5, 0.9],
+          ),
+        ),
+        child: isWideScreen
+            ? Row(
+                children: [
+                  // 1. Side Navigation (Desktop)
+                  GlassSideNav(
+                    selectedIndex: selectedIndex,
+                    onTabSelected: (index) {
+                      ref.read(employeeNavIndexProvider.notifier).state = index;
+                    },
+                  ),
+                  // 2. Body Content (Desktop)
+                  Expanded(
+                    child: SafeArea(
+                      child: MaxWidthWrapper(
+                        maxWidth: 1000,
+                        child: IndexedStack(
+                          index: selectedIndex,
+                          children: pages,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
-                stops: [0.2, 0.5, 0.9],
+              )
+            : Stack(
+                children: [
+                  // 2. Body Content (Mobile)
+                  SafeArea(
+                    bottom: false,
+                    child: MaxWidthWrapper(
+                      child: IndexedStack(
+                        index: selectedIndex,
+                        children: pages,
+                      ),
+                    ),
+                  ),
+                  
+                  // 3. Floating Glass Nav (Mobile)
+                  GlassBottomNav(
+                    selectedIndex: selectedIndex,
+                    onTabSelected: (index) {
+                      ref.read(employeeNavIndexProvider.notifier).state = index;
+                    },
+                  ),
+                ],
               ),
-            ),
-          ),
-          
-          // 2. Body Content
-          SafeArea(
-            bottom: false,
-            child: IndexedStack(
-              index: selectedIndex,
-              children: pages,
-            ),
-          ),
-          
-          // 3. Floating Glass Nav
-          GlassBottomNav(
-            selectedIndex: selectedIndex,
-            onTabSelected: (index) {
-              ref.read(employeeNavIndexProvider.notifier).state = index;
-            },
-          ),
-        ],
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:irondesk/routes/app_routes.dart';
 import 'package:irondesk/view/screen/dashboard/employee_dashboard.dart';
 import 'package:irondesk/view/widgets/glass_container.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class EmployeeHomeView extends ConsumerWidget {
   const EmployeeHomeView({super.key});
@@ -138,13 +139,14 @@ class EmployeeHomeView extends ConsumerWidget {
           // Summary Cards Grid
           LayoutBuilder(
             builder: (context, constraints) {
+              final isWide = constraints.maxWidth > 600;
               return GridView.count(
-                crossAxisCount: 2,
+                crossAxisCount: isWide ? 4 : 2,
                 crossAxisSpacing: 15.w,
                 mainAxisSpacing: 15.w,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                childAspectRatio: 1.2,
+                childAspectRatio: isWide ? 1.4 : 1.2,
                 children: [
                   _buildSummaryCard(
                     Icons.calendar_today,
@@ -232,7 +234,183 @@ class EmployeeHomeView extends ConsumerWidget {
               ),
             ),
           ),
+          
+          Gap(20.h),
+          
+          // Developer Stats Chart
+          Text(
+            "Team Distribution", 
+            style: GoogleFonts.montserrat(fontSize: 18.sp, fontWeight: FontWeight.bold)
+          ),
+          Gap(12.h),
+          _buildDeveloperChart(),
+          
+          Gap(20.h),
+          
+          // Public Holidays
+          Text(
+            "Upcoming Holidays", 
+            style: GoogleFonts.montserrat(fontSize: 18.sp, fontWeight: FontWeight.bold)
+          ),
+          Gap(12.h),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildHolidayCard("Republic Day", "26 Jan", Colors.orange),
+                _buildHolidayCard("Holi", "25 Mar", Colors.pink),
+                _buildHolidayCard("Good Friday", "29 Mar", Colors.purple),
+                _buildHolidayCard("Eid al-Fitr", "11 Apr", Colors.green),
+              ],
+            ),
+          ),
+          
+          Gap(20.h),
+          
+          // Announcements
+          Text(
+            "Announcements", 
+            style: GoogleFonts.montserrat(fontSize: 18.sp, fontWeight: FontWeight.bold)
+          ),
+          Gap(12.h),
+          _buildAnnouncementsSection(),
+
           Gap(100.h),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildDeveloperChart() {
+    return GlassContainer(
+      height: 250.h,
+      width: double.infinity,
+      color: Colors.white,
+      opacity: 0.6,
+      padding: EdgeInsets.all(20.w),
+      child: Row(
+        children: [
+          Expanded(
+            child: PieChart(
+              PieChartData(
+                sectionsSpace: 2,
+                centerSpaceRadius: 40,
+                sections: [
+                  PieChartSectionData(
+                    color: Colors.blue, value: 40, title: '40%', radius: 50,
+                    titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                  PieChartSectionData(
+                    color: Colors.purple, value: 30, title: '30%', radius: 50,
+                    titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                  PieChartSectionData(
+                    color: Colors.orange, value: 20, title: '20%', radius: 50,
+                    titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                  PieChartSectionData(
+                    color: Colors.green, value: 10, title: '10%', radius: 50,
+                    titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildChartLegend("Web Dev", Colors.blue),
+              _buildChartLegend("App Dev", Colors.purple),
+              _buildChartLegend("AI/ML", Colors.orange),
+              _buildChartLegend("Backend", Colors.green),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChartLegend(String label, Color color) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Row(
+        children: [
+          Container(width: 12.w, height: 12.w, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          Gap(8.w),
+          Text(label, style: GoogleFonts.inter(fontSize: 12.sp, fontWeight: FontWeight.w600)),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildHolidayCard(String title, String date, Color color) {
+    return Padding(
+      padding: EdgeInsets.only(right: 15.w),
+      child: GlassContainer(
+        width: 140.w,
+        padding: EdgeInsets.all(16.w),
+        color: color,
+        opacity: 0.1,
+        border: Border.all(color: color.withOpacity(0.3)),
+        child: Column(
+          children: [
+            Text(date, style: GoogleFonts.outfit(fontSize: 24.sp, fontWeight: FontWeight.bold, color: color)),
+            Gap(4.h),
+            Text(title, style: GoogleFonts.inter(fontSize: 14.sp, color: Colors.black87), textAlign: TextAlign.center),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildAnnouncementsSection() {
+    return Column(
+      children: [
+        _buildAnnouncementItem("New HR Policy Update", "Effectively immediately, all leave requests...", true),
+        Gap(10.h),
+        _buildAnnouncementItem("Q1 Townhall Meeting", "Join us this Friday for the quarterly...", false),
+        Gap(10.h),
+        _buildAnnouncementItem("Server Maintenance", "Servers will be down on Sunday 2 AM...", false),
+      ],
+    );
+  }
+  
+  Widget _buildAnnouncementItem(String title, String subtitle, bool isNew) {
+    return GlassContainer(
+      width: double.infinity,
+      padding: EdgeInsets.all(16.w),
+      color: Colors.white,
+      opacity: 0.6,
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(10.w),
+            decoration: BoxDecoration(color: Colors.indigo.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+            child: Icon(Icons.campaign, color: Colors.indigo, size: 24.sp),
+          ),
+          Gap(15.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                    if (isNew) ...[
+                      Gap(8.w),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                        decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(4)),
+                        child: Text("NEW", style: TextStyle(color: Colors.white, fontSize: 10.sp, fontWeight: FontWeight.bold)),
+                      )
+                    ]
+                  ],
+                ),
+                Text(subtitle, style: GoogleFonts.inter(color: Colors.grey[700], fontSize: 12.sp), maxLines: 1, overflow: TextOverflow.ellipsis),
+              ],
+            ),
+          )
         ],
       ),
     );
