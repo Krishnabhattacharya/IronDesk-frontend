@@ -1,6 +1,5 @@
 class EndPoints {
-  static final String baseUrl =
-      "https://n2ctama7us.us-east-1.awsapprunner.com/v1/";
+  static final String baseUrl = "http://localhost:3000";
 
   static final String generateNewToken = "";
 
