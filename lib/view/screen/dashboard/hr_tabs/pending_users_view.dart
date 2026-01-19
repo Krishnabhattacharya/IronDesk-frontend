@@ -1,72 +1,126 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+import 'package:irondesk/helper/base_screen_view.dart';
+import 'package:irondesk/providers/viewmodel_provider.dart';
 import 'package:irondesk/routes/app_routes.dart';
+import 'package:irondesk/utils/utils.dart';
+import 'package:irondesk/view/screen/dashboard/company_viewmodel.dart';
 import 'package:irondesk/view/widgets/glass_container.dart';
 
-class PendingUsersView extends StatelessWidget {
+class PendingUsersView extends ConsumerStatefulWidget {
   const PendingUsersView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Mock Data
-    final users = [
-      {"name": "Alice Johnson", "email": "alice@example.com", "date": "2024-01-14"},
-      {"name": "Bob Smith", "email": "bob@example.com", "date": "2024-01-15"},
-      {"name": "Charlie Brown", "email": "charlie@example.com", "date": "2024-01-15"},
-    ];
+  ConsumerState<PendingUsersView> createState() => _PendingUsersViewState();
+}
 
-    return ListView.builder(
-      padding: EdgeInsets.all(16.w),
-      itemCount: users.length,
-      itemBuilder: (context, index) {
-        final user = users[index];
-        return Padding(
-          padding: EdgeInsets.only(bottom: 16.h),
-          child: GlassContainer(
-            color: Colors.white,
-            opacity: 0.8,
+class _PendingUsersViewState extends ConsumerState<PendingUsersView>
+    with BaseScreenView {
+  late CompanyViewModel companyViewModel;
+  @override
+  void initState() {
+    super.initState();
+    companyViewModel = ref.read(ViewModelProvider.companyVM);
+
+    companyViewModel.attachView(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await companyViewModel.getPendingUsers();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final vm = ref.watch(ViewModelProvider.companyVM);
+    return vm.loading
+        ? const Center(child: CircularProgressIndicator())
+        : ListView.builder(
             padding: EdgeInsets.all(16.w),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 25.r,
-                  backgroundColor: Colors.indigo.shade100,
-                  child: Text(
-                    user["name"]![0],
-                    style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Gap(15.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            itemCount: vm.getPendingUsersResponseModel.data!.length,
+            itemBuilder: (context, index) {
+              final user = vm.getPendingUsersResponseModel.data![index];
+              return Padding(
+                padding: EdgeInsets.only(bottom: 16.h),
+                child: GlassContainer(
+                  color: Colors.white,
+                  opacity: 0.8,
+                  padding: EdgeInsets.all(16.w),
+                  child: Row(
                     children: [
-                      Text(user["name"]!, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16.sp)),
-                      Text(user["email"]!, style: GoogleFonts.inter(color: Colors.grey, fontSize: 12.sp)),
-                      Text("Registered: ${user["date"]}", style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 10.sp)),
+                      CircleAvatar(
+                        radius: 25.r,
+                        backgroundColor: Colors.indigo.shade100,
+                        child: Text(
+                          "${user.name![0]}",
+                          style: TextStyle(
+                            color: Colors.indigo,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Gap(15.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${user.name}",
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.sp,
+                              ),
+                            ),
+                            Text(
+                              "${user.email}",
+                              style: GoogleFonts.inter(
+                                color: Colors.grey,
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                            Text(
+                              "Registered: ${user.createdAt}",
+                              style: GoogleFonts.inter(
+                                color: Colors.grey[600],
+                                fontSize: 10.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 8.h,
+                          ),
+                        ),
+                        onPressed: () {
+                          context.pushNamed(
+                            AppRoute.convertToEmployee.name,
+                            extra: user,
+                          );
+                        },
+                        child: Text(
+                          "Approve",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.sp,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                  ),
-                  onPressed: () {
-                    // Navigate to Convert Screen
-                    context.pushNamed(AppRoute.convertToEmployee.name, extra: user);
-                  },
-                  child: Text("Approve", style: TextStyle(color: Colors.white, fontSize: 12.sp)),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
+              );
+            },
+          );
+  }
+
+  @override
+  void navigateToScreen(AppRoute appRoute, {Map<String, String>? params}) {
+    // TODO: implement navigateToScreen
   }
 }

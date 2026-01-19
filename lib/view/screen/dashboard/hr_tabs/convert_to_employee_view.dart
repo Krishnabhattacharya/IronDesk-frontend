@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:irondesk/routes/app_routes.dart';
 import 'package:irondesk/view/widgets/glass_container.dart';
 
 class ConvertToEmployeeView extends StatefulWidget {
@@ -37,7 +36,6 @@ class _ConvertToEmployeeViewState extends State<ConvertToEmployeeView> {
         padding: EdgeInsets.all(20.w),
         child: Column(
           children: [
-            // User Summary
             GlassContainer(
               color: Colors.blue,
               opacity: 0.1,
@@ -59,7 +57,6 @@ class _ConvertToEmployeeViewState extends State<ConvertToEmployeeView> {
             
             Gap(20.h),
             
-            // Form
             GlassContainer(
               color: Colors.white,
               opacity: 0.9,
@@ -80,7 +77,7 @@ class _ConvertToEmployeeViewState extends State<ConvertToEmployeeView> {
                   
                   _buildLabel("Department"),
                   DropdownButtonFormField<String>(
-                    value: _selectedDept,
+                    initialValue: _selectedDept,
                     items: ["Engineering", "Sales", "Operations", "HR"]
                         .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                         .toList(),
@@ -92,7 +89,7 @@ class _ConvertToEmployeeViewState extends State<ConvertToEmployeeView> {
                   
                   _buildLabel("Shift"),
                   DropdownButtonFormField<String>(
-                    value: _selectedShift,
+                    initialValue: _selectedShift,
                     items: ["Morning (9-6)", "Evening (2-11)", "Night (10-7)"]
                         .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                         .toList(),
@@ -111,9 +108,8 @@ class _ConvertToEmployeeViewState extends State<ConvertToEmployeeView> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       onPressed: () {
-                        // Submit Logic (Call API)
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Employee Created Successfully!")));
-                        context.pop(); // Go back to List
+                        context.pop(); 
                       },
                       child: Text("Confirm & Create Employee", style: TextStyle(color: Colors.white, fontSize: 16.sp)),
                     ),

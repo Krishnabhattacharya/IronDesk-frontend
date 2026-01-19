@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:irondesk/providers/repository_provider.dart';
+import 'package:irondesk/view/screen/auth/auth_viewmodel.dart';
 import 'package:irondesk/view/screen/auth/login_viewmodel.dart';
+import 'package:irondesk/view/screen/dashboard/company_viewmodel.dart';
 
 import '../utils/utils.dart';
 
@@ -27,30 +29,10 @@ abstract class ViewModelProvider {
   static final loginVM = ChangeNotifierProvider(
     (ref) => LoginViewModel(ref.read(authRepositoryProvider)),
   );
-
-  // static final settingScreenViewModel = ChangeNotifierProvider(
-  //   (ref) => SettingsScreenViewmodel(ref.read(authRepositoryProvider)),
-  // );
-  // static final forgotpasswordViewModel = ChangeNotifierProvider(
-  //   (ref) => ForgotPasswordViewModel(ref.read(authRepositoryProvider)),
-  // );
-  // static final sellerAddCarViewModel = ChangeNotifierProvider(
-  //   (ref) => SellerAddCarViewModel(
-  //     ref.read(sellerAddCarRepositoryProvider),
-  //     ref.read(sellerDealerCommonRepositoryProvider),
-  //   ),
-  // );
-  // static final sellerDashBoardViewModel = ChangeNotifierProvider(
-  //   (ref) => SellerDashBoardViewmodel(
-  //     ref.read(sellerAddCarRepositoryProvider),
-  //     ref.read(sellerDealerCommonRepositoryProvider),
-  //     ref.read(socketServiceProvider),
-  //   ),
-  // );
-  // static final dealerDashboardViewModel = ChangeNotifierProvider(
-  //   (ref) => DealerDashboardViewModel(
-  //     ref.read(dealerDashboardRepoProvider),
-  //     ref.read(sellerDealerCommonRepositoryProvider),
-  //   ),
-  // );
+  static final authVM = ChangeNotifierProvider(
+    (ref) => AuthViewmodel(companyRepo: ref.read(companyRepoProvider)),
+  );
+  static final companyVM = ChangeNotifierProvider(
+    (ref) => CompanyViewModel(ref.read(companyRepoProvider)),
+  );
 }

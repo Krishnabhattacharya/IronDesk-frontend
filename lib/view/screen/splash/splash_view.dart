@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:irondesk/helper/base_screen_view.dart';
 import 'package:irondesk/routes/app_routes.dart';
 import 'package:irondesk/view/screen/splash/splash_view_model.dart';
@@ -117,13 +115,10 @@ class _SplashViewState extends ConsumerState<SplashView> with BaseScreenView {
     );
   }
 
-  @override
-  void showSnackBar(String message, {Color? color}) {
-    // TODO: implement showSnackBar
-  }
+
 
   @override
   void navigateToScreen(AppRoute appRoute, {Map<String, String>? params}) {
-    // TODO: implement navigateToScreen
+
   }
 }

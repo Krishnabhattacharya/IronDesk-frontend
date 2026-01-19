@@ -1,16 +1,17 @@
 class EndPoints {
-  static final String baseUrl = "http://localhost:3000";
+  static final String baseUrl = "http://localhost:3000/api/v1/";
 
   static final String generateNewToken = "";
-
+  //---------company
+  static final String registerCompany = "company/register";
   //---------auth
-  static final String login = "auth/login";
+  static final String login = "users/login";
   static final String forgotPassword = "auth/forgot-password";
   static final String verify = "auth/verify";
   static final String updatePassword = "user/update-password";
-  static final String registerPhotographer = "/auth/register/photographer";
+  static final String registerUser = "users/register";
   static final String deleteAccount = "user/removed-account";
-
+  static final String getpendingUser = "users/pending";
   //----------booking
   static final String photographerBooking = "booking/list/photographer/";
   static final String photographerBookingDetails = "booking/details/";

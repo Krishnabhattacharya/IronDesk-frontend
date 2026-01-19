@@ -2,46 +2,40 @@ import 'dart:developer';
 
 import 'package:irondesk/core/core.dart';
 import 'package:irondesk/data/remote/auth/auth_repo.dart';
-import 'package:irondesk/data/remote/auth/model/seller_dealer_common/login_model.dart';
-import 'package:irondesk/data/remote/auth/model/user/update_user_Details_model.dart';
+import 'package:irondesk/data/remote/auth/model/login_user_request_model.dart';
+import 'package:irondesk/data/remote/auth/model/login_user_response_model.dart';
+import 'package:irondesk/data/remote/auth/model/register_user_request_model.dart';
+import 'package:irondesk/data/remote/auth/model/update_user_Details_model.dart';
 import 'package:irondesk/helper/base_screen_view.dart';
 import 'package:irondesk/helper/base_view_model.dart';
-import 'package:irondesk/services/shared_preference_service.dart';
-import 'package:irondesk/utils/utils.dart';
-import 'package:irondesk/services/enums/user_type.dart';
 import 'package:irondesk/routes/app_routes.dart';
 
 class LoginViewModel extends BaseViewModel<BaseScreenView> {
   final AuthRepo authRepo;
   LoginViewModel(this.authRepo);
 
-  LoginResponseModel _loginResponseModel = LoginResponseModel();
-  LoginResponseModel get loginResponseModel => _loginResponseModel;
+  LoginUserResponseModel _loginResponseModel = LoginUserResponseModel();
+  LoginUserResponseModel get loginResponseModel => _loginResponseModel;
 
-  // Login Method
-  Future<bool> login(LoginRequestModel request) async {
-    toggleLoading(); // Start loading
+  Future<bool> login(LoginUserRequestModel request) async {
+    toggleLoading();
     final result = await authRepo.login(request);
     bool isSuccess = false;
 
     result.fold(
       (failure) {
-        _loginResponseModel = LoginResponseModel();
-        toggleLoading(); // Stop loading
-        view?.showErrorSnackBar(
-          failure.message,
-         // color: const Color.fromARGB(255, 255, 119, 119),
-        );
+        _loginResponseModel = LoginUserResponseModel();
+        toggleLoading();
+        view?.showErrorSnackBar(failure.message);
         log("Error from login-> ${failure.message}");
         isSuccess = false;
       },
       (success) {
-        if (success.isSuccess == true &&
+        if (success.success == true &&
             success.data != null &&
             success.data!.user != null) {
           _loginResponseModel = success;
-          
-          // Save Tokens
+
           SharedPrefsService.setString(
             AppConstants.userIdPref,
             success.data!.user!.id!,
@@ -50,61 +44,75 @@ class LoginViewModel extends BaseViewModel<BaseScreenView> {
             AppConstants.usertokenpref,
             success.data!.accessToken!,
           );
+          Logger.printInfo(success.data!.accessToken ?? "na");
           SharedPrefsService.setString(
             AppConstants.userReftokenpref,
             success.data!.refreshToken!,
           );
 
-          // Save User Type/Role consistently
-          // API returns role string (e.g. "seller", "dealer", "admin")
           final role = success.data!.user!.role;
           SharedPrefsService.setString("user_type", role ?? "client");
-          
+
           isSuccess = true;
         } else {
-          view?.showErrorSnackBar(
-            success.message ?? 'Login failed',
-          );
+          view?.showErrorSnackBar(success.message ?? 'Login failed');
           isSuccess = false;
         }
 
-        toggleLoading(); // Stop loading
+        toggleLoading();
       },
     );
     return isSuccess;
   }
 
-  // Determine route based on role
-  String getDashboardRouteForRole(String? role) {
-    if (role == "employee") {
-      return AppRoute.employeeDashboard.name;
-    } else if (role == "hr") {
-      return AppRoute.hrDashboard.name;
-    } else if (role == "admin") {
-      return AppRoute.attendanceCheckIn.name;
-    } else if (role == "client" || role == "user") {
-      // User -> Waiting Dashboard
-      return AppRoute.employeeActivation.name;
+  Future<void> registerUser(
+    RegisterUserRequestModel registerUserRequestModel,
+  ) async {
+    try {
+      toggleLoading();
+      final result = await authRepo.registerUser(registerUserRequestModel);
+      result.fold(
+        (failure) {
+          toggleLoading();
+          view?.showErrorSnackBar(failure.message);
+        },
+        (success) {
+          toggleLoading();
+          view?.showSuccessSnackBar("Registeration Successfull");
+        },
+      );
+    } catch (e) {
+      view?.showErrorSnackBar(e.toString());
+    } finally {
+      toggleLoading();
     }
-    return AppRoute.employeeActivation.name; // Default fallback
+  }
+
+  String getDashboardRouteForRole(String? role) {
+    Logger.printInfo(role!);
+    if (role == "EMPLOYEE") {
+      return AppRoute.employeeDashboard.name;
+    } else if (role == "HR") {
+      return AppRoute.hrDashboard.name;
+    } else if (role == "ADMIN") {
+      return AppRoute.hrDashboard.name;
+    } else if (role == "USER") {
+      return AppRoute.waitingDashboard.name;
+    }
+    return AppRoute.waitingDashboard.name;
   }
 
   Future<bool> updateUserToken(UserTokenUpdate toekn) async {
     bool isSuccess = false;
-    // Don't toggle loading here to avoid UI flicker if background
-    // toggleLoading(); 
-
     final result = await authRepo.updateUserToken(toekn);
     result.fold(
       (failure) {
-        // view?.showSnackBar(failure.message); // Optional: don't show snackbar for background token update
         log("Error from update user token-> ${failure.message}");
       },
       (success) {
         isSuccess = true;
       },
     );
-    // toggleLoading();
 
     return isSuccess;
   }
@@ -116,9 +124,7 @@ class LoginViewModel extends BaseViewModel<BaseScreenView> {
     final result = await authRepo.removeUser();
     result.fold(
       (failure) {
-        view?.showErrorSnackBar(
-          failure.message,
-        );
+        view?.showErrorSnackBar(failure.message);
       },
       (success) {
         isSuccess = true;
