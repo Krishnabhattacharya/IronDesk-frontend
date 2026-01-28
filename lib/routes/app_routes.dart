@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:irondesk/data/remote/auth/model/login_user_response_model.dart';
 import 'package:irondesk/services/enums/user_type.dart';
 import 'package:irondesk/view/screen/auth/company_register_view.dart';
 import 'package:irondesk/view/screen/auth/landing_view.dart';
@@ -15,8 +16,10 @@ import 'package:irondesk/view/screen/dashboard/employee_dashboard.dart';
 import 'package:irondesk/view/screen/attendance/attendance_checkin_view.dart';
 import 'package:irondesk/view/screen/dashboard/hr_tabs/convert_to_employee_view.dart';
 import 'package:irondesk/view/screen/dashboard/activation/employee_activation_view.dart';
-import 'package:irondesk/view/screen/dashboard/inventory/my_inventory_view.dart'; 
+import 'package:irondesk/view/screen/dashboard/inventory/my_inventory_view.dart';
 import 'package:irondesk/view/screen/dashboard/employee_tabs/apply_leave_view.dart';
+import 'package:irondesk/data/remote/employee/model/employee_response_model.dart';
+import 'package:irondesk/view/screen/dashboard/hr_tabs/employee_details_view.dart';
 
 enum AppRoute {
   splash,
@@ -29,14 +32,20 @@ enum AppRoute {
   employeeActivation,
   myInventory,
   applyLeave,
-  forgetPasswordScreen, waitingDashboard, adminDashboard, landing, registerCompany,
+  forgetPasswordScreen,
+  waitingDashboard,
+  adminDashboard,
+  landing,
+  registerCompany,
+  employeeDetails,
 }
 
 final routers = [
   GoRoute(
     path: '/',
     name: AppRoute.splash.name,
-    builder: (context, state) => const SplashView(), // Splash logic determines next step
+    builder: (context, state) =>
+        const SplashView(), // Splash logic determines next step
   ),
   GoRoute(
     path: '/landing',
@@ -49,32 +58,31 @@ final routers = [
     builder: (context, state) => const CompanyRegisterView(),
   ),
   // ... existing routes ...
-    GoRoute(
+  GoRoute(
     path: '/employeeActivation',
     name: AppRoute.employeeActivation.name,
     builder: (context, state) => const EmployeeActivationView(),
   ),
-   GoRoute(
+  GoRoute(
     path: '/myInventory',
     name: AppRoute.myInventory.name,
     builder: (context, state) => const MyInventoryView(),
   ),
-   GoRoute(
+  GoRoute(
     path: '/applyLeave',
     name: AppRoute.applyLeave.name,
     builder: (context, state) => const ApplyLeaveView(),
   ),
-  // ... (keep existing) ...
 
+  // ... (keep existing) ...
   GoRoute(
     path: '/convertToEmployee',
     name: AppRoute.convertToEmployee.name,
     builder: (context, state) {
-      final userData = state.extra as Map<String, String>?;
+      final userData = state.extra as User;
       return ConvertToEmployeeView(userData: userData);
     },
   ),
-
 
   GoRoute(
     path: '/login',
@@ -89,7 +97,7 @@ final routers = [
       return RegisterView(userType: userType ?? UserType.client);
     },
   ),
-  
+
   // Dashboards
   GoRoute(
     path: '/hrDashboard',
@@ -109,9 +117,10 @@ final routers = [
   GoRoute(
     path: '/adminDashboard',
     name: AppRoute.adminDashboard.name,
-    builder: (context, state) => const Scaffold(body: Center(child: Text("Admin Dashboard (TODO)"))),
+    builder: (context, state) =>
+        const Scaffold(body: Center(child: Text("Admin Dashboard (TODO)"))),
   ),
-  
+
   // Features
   GoRoute(
     path: '/attendanceCheckIn',
@@ -119,10 +128,18 @@ final routers = [
     builder: (context, state) => const AttendanceCheckInView(),
   ),
   
-   GoRoute(
+
+  GoRoute(
     path: '/forgotPassword',
     name: AppRoute.forgetPasswordScreen.name,
-    builder: (context, state) => Container(), 
+    builder: (context, state) => Container(),
+  ),
+  GoRoute(
+    path: '/employeeDetails',
+    name: AppRoute.employeeDetails.name,
+    builder: (context, state) {
+      final employee = state.extra as Datum;
+      return EmployeeDetailsView(employee: employee);
+    },
   ),
 ];
-

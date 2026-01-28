@@ -14,25 +14,19 @@ class AttendanceCheckInView extends StatefulWidget {
 }
 
 class _AttendanceCheckInViewState extends State<AttendanceCheckInView> {
-  int _step = 0; // 0: Location, 1: Biometric, 2: Success
+  int _step = 0;
 
   @override
   void initState() {
     super.initState();
-    // Simulate steps
     _startProcess();
   }
 
   Future<void> _startProcess() async {
-    // Step 0: Location
     await Future.delayed(const Duration(seconds: 2));
     setState(() => _step = 1);
     
-    // Step 1: Biometric (Simulated prompt)
-    // Normally we'd call local_auth package here
     await Future.delayed(const Duration(seconds: 1));
-    // Show mock dialog? Or just proceed
-    
     setState(() => _step = 2);
   }
 

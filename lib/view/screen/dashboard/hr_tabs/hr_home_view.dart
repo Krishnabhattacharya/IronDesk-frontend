@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:irondesk/core/constants.dart';
+import 'package:irondesk/providers/viewmodel_provider.dart';
 import 'package:irondesk/routes/app_routes.dart';
 import 'package:irondesk/services/shared_preference_service.dart';
 import 'package:irondesk/view/widgets/glass_container.dart';
@@ -16,6 +17,7 @@ class HRHomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final companyVM = ref.watch(ViewModelProvider.companyVM);
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 100.h),
       child: Column(
@@ -47,9 +49,9 @@ class HRHomeView extends ConsumerWidget {
               ),
               IconButton(
                 onPressed: () {
-                   SharedPrefsService.remove("user_type");
-                   SharedPrefsService.remove(AppConstants.token);
-                   context.goNamed(AppRoute.landing.name);
+                  SharedPrefsService.remove("user_type");
+                  SharedPrefsService.remove(AppConstants.token);
+                  context.goNamed(AppRoute.landing.name);
                 },
                 icon: CircleAvatar(
                   backgroundColor: Colors.white.withOpacity(0.5),
@@ -58,14 +60,46 @@ class HRHomeView extends ConsumerWidget {
               ),
             ],
           ),
-          
-          Gap(25.h),
-          
+          Gap(15.h),
+          GestureDetector(
+            onTap: () async {
+              await companyVM.postCurrentLocation();
+            },
+            child: GlassContainer(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+              borderRadius: BorderRadius.circular(12.r),
+              color: Colors.indigo,
+              opacity: 0.1,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.add_location_alt_rounded,
+                    size: 20.sp,
+                    color: Color(0xFF102E76),
+                  ),
+                  Gap(10.w),
+                  companyVM.loading
+                      ? CircularProgressIndicator(trackGap: 0.7)
+                      : Text(
+                          "Add/Update Work Location",
+                          style: GoogleFonts.montserrat(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF102E76),
+                          ),
+                        ),
+                ],
+              ),
+            ),
+          ),
+          Gap(15.h),
+
           // Stats Grid
           LayoutBuilder(
             builder: (context, constraints) {
-               final isWide = constraints.maxWidth > 600;
-               return GridView.count(
+              final isWide = constraints.maxWidth > 600;
+              return GridView.count(
                 crossAxisCount: isWide ? 4 : 2,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -73,19 +107,45 @@ class HRHomeView extends ConsumerWidget {
                 mainAxisSpacing: 15.w,
                 childAspectRatio: isWide ? 1.4 : 1.1,
                 children: [
-                  _buildStatCard("Pending Users", "12", Icons.person_add, Colors.orange),
-                  _buildStatCard("Total Staff", "145", Icons.people_alt, Colors.blue),
-                  _buildStatCard("On Leave", "8", Icons.beach_access, Colors.purple),
-                  _buildStatCard("Attendance", "92%", Icons.trending_up, Colors.green),
+                  _buildStatCard(
+                    "Pending Users",
+                    "${ref.read(ViewModelProvider.companyVM).getPendingUsersResponseModel.data?.length}",
+                    Icons.person_add,
+                    Colors.orange,
+                  ),
+                  _buildStatCard(
+                    "Total Staff",
+                    "${ref.read(ViewModelProvider.companyVM).getEmployeeListResponse.data?.length}",
+                    Icons.people_alt,
+                    Colors.blue,
+                  ),
+                  _buildStatCard(
+                    "On Leave",
+                    "8",
+                    Icons.beach_access,
+                    Colors.purple,
+                  ),
+                  _buildStatCard(
+                    "Attendance",
+                    "92%",
+                    Icons.trending_up,
+                    Colors.green,
+                  ),
                 ],
               );
-            }
+            },
           ),
-          
+
           Gap(30.h),
-          
+
           // Department Distribution
-          Text("Department Breakdown", style: GoogleFonts.montserrat(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+          Text(
+            "Department Breakdown",
+            style: GoogleFonts.montserrat(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Gap(15.h),
           GlassContainer(
             height: 250.h,
@@ -102,20 +162,48 @@ class HRHomeView extends ConsumerWidget {
                       centerSpaceRadius: 40,
                       sections: [
                         PieChartSectionData(
-                          color: Colors.blue, value: 40, title: '40%', radius: 50,
-                          titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
-                        ),
-                         PieChartSectionData(
-                          color: Colors.purple, value: 30, title: '30%', radius: 50,
-                          titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                          color: Colors.blue,
+                          value: 40,
+                          title: '40%',
+                          radius: 50,
+                          titleStyle: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                         PieChartSectionData(
-                          color: Colors.orange, value: 20, title: '20%', radius: 50,
-                          titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                          color: Colors.purple,
+                          value: 30,
+                          title: '30%',
+                          radius: 50,
+                          titleStyle: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                         PieChartSectionData(
-                          color: Colors.green, value: 10, title: '10%', radius: 50,
-                          titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                          color: Colors.orange,
+                          value: 20,
+                          title: '20%',
+                          radius: 50,
+                          titleStyle: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        PieChartSectionData(
+                          color: Colors.green,
+                          value: 10,
+                          title: '10%',
+                          radius: 50,
+                          titleStyle: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
@@ -130,27 +218,50 @@ class HRHomeView extends ConsumerWidget {
                     _buildChartLegend("Marketing", Colors.orange),
                     _buildChartLegend("Operations", Colors.green),
                   ],
-                )
+                ),
               ],
             ),
           ),
-          
+
           Gap(30.h),
-          
+
           // Recent Activity
-          Text("Recent Activity", style: GoogleFonts.montserrat(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+          Text(
+            "Recent Activity",
+            style: GoogleFonts.montserrat(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Gap(15.h),
-          _buildActivityItem("John Doe requested Leave", "Sick Leave • 2 days", "10 min ago"),
+          _buildActivityItem(
+            "John Doe requested Leave",
+            "Sick Leave • 2 days",
+            "10 min ago",
+          ),
           Gap(10.h),
-          _buildActivityItem("Sarah Smith registered", "Frontend Dev • Waiting Approval", "1 hour ago"),
-           Gap(10.h),
-          _buildActivityItem("System Maintenance", "Scheduled for Sunday 2 AM", "2 hours ago"),
+          _buildActivityItem(
+            "Sarah Smith registered",
+            "Frontend Dev • Waiting Approval",
+            "1 hour ago",
+          ),
+          Gap(10.h),
+          _buildActivityItem(
+            "System Maintenance",
+            "Scheduled for Sunday 2 AM",
+            "2 hours ago",
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return GlassContainer(
       color: Colors.white,
       opacity: 0.6,
@@ -169,30 +280,53 @@ class HRHomeView extends ConsumerWidget {
             child: Icon(icon, color: color, size: 24.sp),
           ),
           Column(
-             crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(value, style: GoogleFonts.outfit(fontSize: 24.sp, fontWeight: FontWeight.bold, color: Color(0xFF102E76))),
-              Text(title, style: GoogleFonts.inter(fontSize: 12.sp, color: Colors.grey[700])),
+              Text(
+                value,
+                style: GoogleFonts.outfit(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF102E76),
+                ),
+              ),
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: 12.sp,
+                  color: Colors.grey[700],
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
     ).animate().scale();
   }
-  
+
   Widget _buildChartLegend(String label, Color color) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
         children: [
-          Container(width: 12.w, height: 12.w, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          Container(
+            width: 12.w,
+            height: 12.w,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
           Gap(8.w),
-          Text(label, style: GoogleFonts.inter(fontSize: 12.sp, fontWeight: FontWeight.w600)),
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
   }
-  
+
   Widget _buildActivityItem(String title, String subtitle, String time) {
     return GlassContainer(
       width: double.infinity,
@@ -202,8 +336,12 @@ class HRHomeView extends ConsumerWidget {
       child: Row(
         children: [
           Container(
-            width: 40.w, height: 40.w,
-            decoration: BoxDecoration(color: Colors.indigo.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+            width: 40.w,
+            height: 40.w,
+            decoration: BoxDecoration(
+              color: Colors.indigo.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Icon(Icons.notifications_none, color: Colors.indigo),
           ),
           Gap(15.w),
@@ -211,12 +349,27 @@ class HRHomeView extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 14.sp)),
-                Text(subtitle, style: GoogleFonts.inter(color: Colors.grey[700], fontSize: 12.sp)),
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.sp,
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    color: Colors.grey[700],
+                    fontSize: 12.sp,
+                  ),
+                ),
               ],
             ),
           ),
-          Text(time, style: GoogleFonts.inter(color: Colors.grey, fontSize: 10.sp)),
+          Text(
+            time,
+            style: GoogleFonts.inter(color: Colors.grey, fontSize: 10.sp),
+          ),
         ],
       ),
     );

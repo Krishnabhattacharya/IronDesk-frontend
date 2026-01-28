@@ -20,30 +20,11 @@ String pendingUserResponseModelToJson(PendingUserResponseModel data) =>
 abstract class PendingUserResponseModel with _$PendingUserResponseModel {
   const factory PendingUserResponseModel({
     @JsonKey(name: "statusCode") int? statusCode,
-    @JsonKey(name: "data") List<Datum>? data,
+    @JsonKey(name: "data") List<User>? data,
     @JsonKey(name: "message") String? message,
     @JsonKey(name: "success") bool? success,
   }) = _PendingUserResponseModel;
 
   factory PendingUserResponseModel.fromJson(Map<String, dynamic> json) =>
       _$PendingUserResponseModelFromJson(json);
-}
-
-@freezed
-abstract class Datum with _$Datum {
-  const factory Datum({
-    @JsonKey(name: "_id") String? id,
-    @JsonKey(name: "name") String? name,
-    @JsonKey(name: "email") String? email,
-    @JsonKey(name: "role") String? role,
-    @JsonKey(name: "isActive") bool? isActive,
-    @JsonKey(name: "approvals") List<dynamic>? approvals,
-    @JsonKey(name: "requests") List<dynamic>? requests,
-    @JsonKey(name: "company") Company? company,
-    @JsonKey(name: "createdAt") DateTime? createdAt,
-    @JsonKey(name: "updatedAt") DateTime? updatedAt,
-    @JsonKey(name: "__v") int? v,
-  }) = _Datum;
-
-  factory Datum.fromJson(Map<String, dynamic> json) => _$DatumFromJson(json);
 }

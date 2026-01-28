@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:irondesk/providers/viewmodel_provider.dart';
 import 'package:irondesk/routes/app_routes.dart';
 import 'package:irondesk/view/screen/dashboard/employee_dashboard.dart';
 import 'package:irondesk/view/widgets/glass_container.dart';
@@ -15,6 +16,7 @@ class EmployeeHomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final attendanceViewModel = ref.watch(ViewModelProvider.attendanceVM);
     return SingleChildScrollView(
       padding: EdgeInsets.all(20.w),
       child: Column(
@@ -135,8 +137,6 @@ class EmployeeHomeView extends ConsumerWidget {
           ),
 
           Gap(20.h),
-
-          // Summary Cards Grid
           LayoutBuilder(
             builder: (context, constraints) {
               final isWide = constraints.maxWidth > 600;
@@ -151,7 +151,7 @@ class EmployeeHomeView extends ConsumerWidget {
                   _buildSummaryCard(
                     Icons.calendar_today,
                     "Attendance",
-                    "20/26",
+                    attendanceViewModel.attendanceHistory.length.toString(),
                     Colors.orange,
                     () => ref.read(employeeNavIndexProvider.notifier).state = 1,
                   ),
@@ -191,7 +191,6 @@ class EmployeeHomeView extends ConsumerWidget {
           ),
           Gap(12.h),
 
-          // Apply Leave Action
           InkWell(
             onTap: () => context.pushNamed(AppRoute.applyLeave.name),
             child: GlassContainer(
@@ -234,23 +233,27 @@ class EmployeeHomeView extends ConsumerWidget {
               ),
             ),
           ),
-          
+
           Gap(20.h),
-          
-          // Developer Stats Chart
+
           Text(
-            "Team Distribution", 
-            style: GoogleFonts.montserrat(fontSize: 18.sp, fontWeight: FontWeight.bold)
+            "Team Distribution",
+            style: GoogleFonts.montserrat(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Gap(12.h),
           _buildDeveloperChart(),
-          
+
           Gap(20.h),
-          
-          // Public Holidays
+
           Text(
-            "Upcoming Holidays", 
-            style: GoogleFonts.montserrat(fontSize: 18.sp, fontWeight: FontWeight.bold)
+            "Upcoming Holidays",
+            style: GoogleFonts.montserrat(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Gap(12.h),
           SingleChildScrollView(
@@ -264,13 +267,15 @@ class EmployeeHomeView extends ConsumerWidget {
               ],
             ),
           ),
-          
+
           Gap(20.h),
-          
-          // Announcements
+
           Text(
-            "Announcements", 
-            style: GoogleFonts.montserrat(fontSize: 18.sp, fontWeight: FontWeight.bold)
+            "Announcements",
+            style: GoogleFonts.montserrat(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Gap(12.h),
           _buildAnnouncementsSection(),
@@ -280,7 +285,7 @@ class EmployeeHomeView extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildDeveloperChart() {
     return GlassContainer(
       height: 250.h,
@@ -297,20 +302,48 @@ class EmployeeHomeView extends ConsumerWidget {
                 centerSpaceRadius: 40,
                 sections: [
                   PieChartSectionData(
-                    color: Colors.blue, value: 40, title: '40%', radius: 50,
-                    titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                    color: Colors.blue,
+                    value: 40,
+                    title: '40%',
+                    radius: 50,
+                    titleStyle: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   PieChartSectionData(
-                    color: Colors.purple, value: 30, title: '30%', radius: 50,
-                    titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                    color: Colors.purple,
+                    value: 30,
+                    title: '30%',
+                    radius: 50,
+                    titleStyle: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   PieChartSectionData(
-                    color: Colors.orange, value: 20, title: '20%', radius: 50,
-                    titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                    color: Colors.orange,
+                    value: 20,
+                    title: '20%',
+                    radius: 50,
+                    titleStyle: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   PieChartSectionData(
-                    color: Colors.green, value: 10, title: '10%', radius: 50,
-                    titleStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                    color: Colors.green,
+                    value: 10,
+                    title: '10%',
+                    radius: 50,
+                    titleStyle: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),
@@ -325,7 +358,7 @@ class EmployeeHomeView extends ConsumerWidget {
               _buildChartLegend("AI/ML", Colors.orange),
               _buildChartLegend("Backend", Colors.green),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -336,14 +369,24 @@ class EmployeeHomeView extends ConsumerWidget {
       padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
         children: [
-          Container(width: 12.w, height: 12.w, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          Container(
+            width: 12.w,
+            height: 12.w,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
           Gap(8.w),
-          Text(label, style: GoogleFonts.inter(fontSize: 12.sp, fontWeight: FontWeight.w600)),
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
   }
-  
+
   Widget _buildHolidayCard(String title, String date, Color color) {
     return Padding(
       padding: EdgeInsets.only(right: 15.w),
@@ -355,27 +398,50 @@ class EmployeeHomeView extends ConsumerWidget {
         border: Border.all(color: color.withOpacity(0.3)),
         child: Column(
           children: [
-            Text(date, style: GoogleFonts.outfit(fontSize: 24.sp, fontWeight: FontWeight.bold, color: color)),
+            Text(
+              date,
+              style: GoogleFonts.outfit(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
             Gap(4.h),
-            Text(title, style: GoogleFonts.inter(fontSize: 14.sp, color: Colors.black87), textAlign: TextAlign.center),
+            Text(
+              title,
+              style: GoogleFonts.inter(fontSize: 14.sp, color: Colors.black87),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
     );
   }
-  
+
   Widget _buildAnnouncementsSection() {
     return Column(
       children: [
-        _buildAnnouncementItem("New HR Policy Update", "Effectively immediately, all leave requests...", true),
+        _buildAnnouncementItem(
+          "New HR Policy Update",
+          "Effectively immediately, all leave requests...",
+          true,
+        ),
         Gap(10.h),
-        _buildAnnouncementItem("Q1 Townhall Meeting", "Join us this Friday for the quarterly...", false),
+        _buildAnnouncementItem(
+          "Q1 Townhall Meeting",
+          "Join us this Friday for the quarterly...",
+          false,
+        ),
         Gap(10.h),
-        _buildAnnouncementItem("Server Maintenance", "Servers will be down on Sunday 2 AM...", false),
+        _buildAnnouncementItem(
+          "Server Maintenance",
+          "Servers will be down on Sunday 2 AM...",
+          false,
+        ),
       ],
     );
   }
-  
+
   Widget _buildAnnouncementItem(String title, String subtitle, bool isNew) {
     return GlassContainer(
       width: double.infinity,
@@ -386,7 +452,10 @@ class EmployeeHomeView extends ConsumerWidget {
         children: [
           Container(
             padding: EdgeInsets.all(10.w),
-            decoration: BoxDecoration(color: Colors.indigo.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(
+              color: Colors.indigo.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Icon(Icons.campaign, color: Colors.indigo, size: 24.sp),
           ),
           Gap(15.w),
@@ -396,21 +465,48 @@ class EmployeeHomeView extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                    Text(
+                      title,
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14.sp,
+                      ),
+                    ),
                     if (isNew) ...[
                       Gap(8.w),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                        decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(4)),
-                        child: Text("NEW", style: TextStyle(color: Colors.white, fontSize: 10.sp, fontWeight: FontWeight.bold)),
-                      )
-                    ]
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 6.w,
+                          vertical: 2.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          "NEW",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
-                Text(subtitle, style: GoogleFonts.inter(color: Colors.grey[700], fontSize: 12.sp), maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    color: Colors.grey[700],
+                    fontSize: 12.sp,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

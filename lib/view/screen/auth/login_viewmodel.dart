@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:irondesk/core/core.dart';
+import 'package:irondesk/services/pref_keys.dart'; // Added import
 import 'package:irondesk/data/remote/auth/auth_repo.dart';
 import 'package:irondesk/data/remote/auth/model/login_user_request_model.dart';
 import 'package:irondesk/data/remote/auth/model/login_user_response_model.dart';
@@ -37,16 +38,16 @@ class LoginViewModel extends BaseViewModel<BaseScreenView> {
           _loginResponseModel = success;
 
           SharedPrefsService.setString(
-            AppConstants.userIdPref,
+            PrefKeys.userId.name,
             success.data!.user!.id!,
           );
           SharedPrefsService.setString(
-            AppConstants.usertokenpref,
+            PrefKeys.accessToken.name,
             success.data!.accessToken!,
           );
           Logger.printInfo(success.data!.accessToken ?? "na");
           SharedPrefsService.setString(
-            AppConstants.userReftokenpref,
+            PrefKeys.refreshToken.name,
             success.data!.refreshToken!,
           );
 
@@ -90,7 +91,7 @@ class LoginViewModel extends BaseViewModel<BaseScreenView> {
 
   String getDashboardRouteForRole(String? role) {
     Logger.printInfo(role!);
-    if (role == "EMPLOYEE") {
+    if (role == "EMPLOYEE" || role == "ENGINEER") {
       return AppRoute.employeeDashboard.name;
     } else if (role == "HR") {
       return AppRoute.hrDashboard.name;

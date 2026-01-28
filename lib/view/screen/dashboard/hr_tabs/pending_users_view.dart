@@ -23,9 +23,7 @@ class _PendingUsersViewState extends ConsumerState<PendingUsersView>
     companyViewModel = ref.read(ViewModelProvider.companyVM);
 
     companyViewModel.attachView(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await companyViewModel.getPendingUsers();
-    });
+    
   }
 
   @override
@@ -35,7 +33,7 @@ class _PendingUsersViewState extends ConsumerState<PendingUsersView>
         ? const Center(child: CircularProgressIndicator())
         : ListView.builder(
             padding: EdgeInsets.all(16.w),
-            itemCount: vm.getPendingUsersResponseModel.data!.length,
+            itemCount: vm.getPendingUsersResponseModel.data?.length ?? 0,
             itemBuilder: (context, index) {
               final user = vm.getPendingUsersResponseModel.data![index];
               return Padding(

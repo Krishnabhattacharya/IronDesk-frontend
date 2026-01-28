@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:irondesk/view/widgets/glass_container.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 
 class AttendanceView extends StatelessWidget {
@@ -16,7 +15,6 @@ class AttendanceView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           GlassContainer(
             padding: EdgeInsets.all(20.w),
             color: Colors.indigo,
@@ -45,10 +43,8 @@ class AttendanceView extends StatelessWidget {
           
           Gap(20.h),
           
-          // Calendar Grid (Simulated)
           Text("Month View", style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16.sp)),
           Gap(10.h),
-          // Glass Calendar Grid
           GlassContainer(
             width: double.infinity,
             padding: EdgeInsets.all(16.w),
@@ -57,7 +53,6 @@ class AttendanceView extends StatelessWidget {
             border: Border.all(color: Colors.white.withOpacity(0.3), width: 1.5),
             child: Column(
               children: [
-                // Week Header
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -65,7 +60,6 @@ class AttendanceView extends StatelessWidget {
                       .toList(),
                 ),
                 Gap(15.h),
-                // Days Grid (Mock)
                 GridView.count(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
@@ -74,11 +68,10 @@ class AttendanceView extends StatelessWidget {
                   crossAxisSpacing: 8.w,
                   children: List.generate(31, (index) {
                     final day = index + 1;
-                    // Mock status: 1=Present, 2=Late, 3=Absent, 0=Weekend/Future
                     int status = 1;
-                    if (day % 7 == 0 || day % 7 == 6) status = 0; // Weekend
-                    if (day == 5 || day == 18) status = 2; // Late
-                    if (day == 12) status = 3; // Absent
+                    if (day % 7 == 0 || day % 7 == 6) status = 0; 
+                    if (day == 5 || day == 18) status = 2; 
+                    if (day == 12) status = 3; 
                     
                     Color color = Colors.white.withOpacity(0.1);
                     Color textColor = Colors.white70;
@@ -107,7 +100,6 @@ class AttendanceView extends StatelessWidget {
                   }),
                 ),
                 Gap(15.h),
-                // Legend
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -125,7 +117,6 @@ class AttendanceView extends StatelessWidget {
           Text("Recent Logs", style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16.sp)),
           Gap(10.h),
           
-          // Logs List
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),

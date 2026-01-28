@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:irondesk/providers/repository_provider.dart';
 import 'package:irondesk/view/screen/auth/auth_viewmodel.dart';
 import 'package:irondesk/view/screen/auth/login_viewmodel.dart';
+import 'package:irondesk/view/screen/dashboard/attendance_viewmodel.dart';
 import 'package:irondesk/view/screen/dashboard/company_viewmodel.dart';
+import 'package:irondesk/view/screen/dashboard/requests_viewmodel.dart';
 
 import '../utils/utils.dart';
 
@@ -33,6 +35,17 @@ abstract class ViewModelProvider {
     (ref) => AuthViewmodel(companyRepo: ref.read(companyRepoProvider)),
   );
   static final companyVM = ChangeNotifierProvider(
-    (ref) => CompanyViewModel(ref.read(companyRepoProvider)),
+    (ref) => CompanyViewModel(
+      ref.read(companyRepoProvider),
+      ref.read(employeeRepoProvider),
+    ),
   );
+
+  static final attendanceVM = ChangeNotifierProvider(
+    (ref) => AttendanceViewModel(ref.read(employeeRepoProvider)),
+  );
+
+  // static final requestsVM = ChangeNotifierProvider(
+  //   (ref) => RequestsViewModel(ref.read(requestsRepoProvider)),
+  // );
 }

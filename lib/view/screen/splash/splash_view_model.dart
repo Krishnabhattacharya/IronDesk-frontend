@@ -26,7 +26,7 @@ class SplashViewModel extends BaseViewModel<BaseScreenView> {
         GoRouter.of(context).goNamed(AppRoute.hrDashboard.name);
       } else if (userTypeStr == "ADMIN") {
         Logger.printInfo("Navigating to ADMIN dashboard");
-        GoRouter.of(context).goNamed(AppRoute.adminDashboard.name);
+        GoRouter.of(context).goNamed(AppRoute.hrDashboard.name);
       } else if (userTypeStr == "USER" || userTypeStr == "USER") {
         Logger.printInfo("Navigating to WAITING dashboard");
         GoRouter.of(context).goNamed(AppRoute.waitingDashboard.name);
