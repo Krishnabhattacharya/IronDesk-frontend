@@ -41,8 +41,8 @@ abstract class ViewModelProvider {
     ),
   );
 
-  static final attendanceVM = ChangeNotifierProvider(
-    (ref) => AttendanceViewModel(ref.read(employeeRepoProvider)),
+  static final employeeVM = ChangeNotifierProvider(
+    (ref) => EmployeeViewModel(ref.read(employeeRepoProvider)),
   );
 
   // static final requestsVM = ChangeNotifierProvider(

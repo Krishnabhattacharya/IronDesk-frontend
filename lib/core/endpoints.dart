@@ -1,9 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class EndPoints {
-  static final String baseUrl = kIsWeb
-      ? "http://192.168.1.18:3000/api/v1/"
-      : "https://iron-desk.vercel.app/api/v1/";
+  static final String baseUrl = "https://iron-desk.vercel.app/api/v1/";
 
   static final String generateNewToken = "";
   //---------company
@@ -22,6 +20,9 @@ class EndPoints {
   static final String updateWorkLocation = "attendance/locations";
   static final String getWorkLocation = "attendance/locations";
   static final String getCompanyDetails = "company/details";
+  static final String checkIn = "attendance/check-in";
+  static final String checkOut = "attendance/check-out";
+  static final String todayAttendance = "attendance/today";
   //---------requests
   static final String getLeaveRequests = "leave/pending";
   static final String updateLeaveStatus = "leave/status"; // /{id}

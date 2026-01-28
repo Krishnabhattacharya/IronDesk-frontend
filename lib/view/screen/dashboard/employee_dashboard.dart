@@ -26,16 +26,17 @@ class EmployeeDashboard extends ConsumerStatefulWidget {
 
 class _EmployeeDashboardState extends ConsumerState<EmployeeDashboard>
     with BaseScreenView {
-  late AttendanceViewModel attendanceViewModel;
+  late EmployeeViewModel employeeViewModel;
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(employeeNavIndexProvider.notifier).state = 0;
-      attendanceViewModel = ref.read(ViewModelProvider.attendanceVM);
-      attendanceViewModel.attachView(this);
-      await attendanceViewModel.getAttendanceHistory();
+      employeeViewModel = ref.read(ViewModelProvider.employeeVM);
+      employeeViewModel.attachView(this);
+      await employeeViewModel.getAttendanceHistory();
+      await employeeViewModel.getTodayAttendence();
     });
   }
 

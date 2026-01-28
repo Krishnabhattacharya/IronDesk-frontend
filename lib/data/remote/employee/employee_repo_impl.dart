@@ -5,7 +5,12 @@ import 'package:irondesk/core/exceptions.dart';
 import 'package:irondesk/data/remote/employee/employee_repo.dart'
     show EmployeeRepo;
 import 'package:irondesk/data/remote/employee/model/attendance_history_model.dart';
+import 'package:irondesk/data/remote/employee/model/check_in_request_model.dart';
+import 'package:irondesk/data/remote/employee/model/check_in_response_model.dart';
+import 'package:irondesk/data/remote/employee/model/check_out_request_model.dart';
+import 'package:irondesk/data/remote/employee/model/check_out_response_model.dart';
 import 'package:irondesk/data/remote/employee/model/employee_response_model.dart';
+import 'package:irondesk/data/remote/employee/model/today_attendence_response_model.dart';
 import 'package:irondesk/utils/logger.dart';
 
 class EmployeeRepoImpl implements EmployeeRepo {
@@ -50,6 +55,51 @@ class EmployeeRepoImpl implements EmployeeRepo {
     } catch (e) {
       Logger.printError("Attendance History Error: $e");
       return left(ApiException("Failed to fetch attendance history"));
+    }
+  }
+
+  @override
+  Future<Either<ApiException, CheckInResponseModel>> checkIn(
+    CheckInRequestModel checkInRequestModel,
+  ) async {
+    try {
+      final response = await _apiService.post(
+        endPoint: EndPoints.checkIn,
+        payload: checkInRequestModel.toJson(),
+      );
+      final checkInResponse = CheckInResponseModel.fromJson(response.data!);
+      return right(checkInResponse);
+    } catch (e) {
+      Logger.printError("Check-in Error: $e");
+      return left(ApiException(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ApiException, TodayAttendenceResponseModel>>
+  getTodayAttendence() async {
+    try {
+      final response = await _apiService.get(EndPoints.todayAttendance);
+      final history = TodayAttendenceResponseModel.fromJson(response.data!);
+      return right(history);
+    } catch (e) {
+      Logger.printError("Today Attendance Error: $e");
+      return left(ApiException("Failed to fetch today attendance"));
+    }
+  }
+
+  @override
+  Future<Either<ApiException, CheckOutResponseModel>> checkOut(CheckOutRequestModel checkOutRequestModel) async {
+    try {
+      final response = await _apiService.post(
+        endPoint: EndPoints.checkOut,
+        payload: checkOutRequestModel.toJson(),
+      );
+      final checkOutResponse = CheckOutResponseModel.fromJson(response.data!);
+      return right(checkOutResponse);
+    } catch (e) {
+      Logger.printError("Check-out Error: $e");
+      return left(ApiException(e.toString()));
     }
   }
 }

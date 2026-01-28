@@ -18,7 +18,7 @@ class SplashViewModel extends BaseViewModel<BaseScreenView> {
     Logger.printInfo("Token: '$token'");
 
     if (token != null && token.isNotEmpty && userTypeStr != null) {
-      if (userTypeStr == "EMPLOYEE") {
+      if (userTypeStr == "EMPLOYEE" || userTypeStr == "ENGINEER") {
         Logger.printInfo("Navigating to EMPLOYEE dashboard");
         GoRouter.of(context).goNamed(AppRoute.employeeDashboard.name);
       } else if (userTypeStr == "HR") {
